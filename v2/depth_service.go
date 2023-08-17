@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/adshao/go-binance/v2/common"
+	"github.com/FlexShashlik/go-binance/v2/common"
 )
 
 // DepthService show depth info
