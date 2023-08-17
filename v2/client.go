@@ -408,6 +408,7 @@ func (c *Client) callAPI(ctx context.Context, r *request, opts ...RequestOption)
 	if err != nil {
 		return []byte{}, err
 	}
+	r.header = res.Header // TODO: maybe pass header differently
 	data, err = ioutil.ReadAll(res.Body)
 	if err != nil {
 		return []byte{}, err

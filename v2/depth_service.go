@@ -2,7 +2,9 @@ package binance
 
 import (
 	"context"
+	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/adshao/go-binance/v2/common"
 )
@@ -45,6 +47,10 @@ func (s *DepthService) Do(ctx context.Context, opts ...RequestOption) (res *Dept
 		return nil, err
 	}
 	res = new(DepthResponse)
+	res.UsedWeight1M, err = strconv.ParseInt(r.header.Get("X-MBX-USED-WEIGHT-1M"), 0, 64)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 	res.LastUpdateID = j.Get("lastUpdateId").MustInt64()
 	bidsLen := len(j.Get("bids").MustArray())
 	res.Bids = make([]Bid, bidsLen)
@@ -69,6 +75,7 @@ func (s *DepthService) Do(ctx context.Context, opts ...RequestOption) (res *Dept
 
 // DepthResponse define depth info with bids and asks
 type DepthResponse struct {
+	UsedWeight1M int64 `json:"-"`
 	LastUpdateID int64 `json:"lastUpdateId"`
 	Bids         []Bid `json:"bids"`
 	Asks         []Ask `json:"asks"`
