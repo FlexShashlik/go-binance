@@ -2,6 +2,7 @@ package binance
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -31,8 +32,13 @@ var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (don
 		EnableCompression: false,
 	}
 
-	c, _, err := Dialer.Dial(cfg.Endpoint, nil)
+	c, res, err := Dialer.Dial(cfg.Endpoint, nil)
 	if err != nil {
+		if res.StatusCode == http.StatusTooManyRequests {
+			delay, _ := strconv.ParseInt(res.Header.Get("Retry-After"), 10, 64)
+			time.Sleep(time.Duration(delay) * time.Second)
+		}
+
 		return nil, nil, err
 	}
 	c.SetReadLimit(655350)
