@@ -1,6 +1,7 @@
 package binance
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -34,6 +35,7 @@ var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (don
 
 	c, res, err := Dialer.Dial(cfg.Endpoint, nil)
 	if err != nil {
+		fmt.Println("Error: " + res.Status)
 		if res.StatusCode == http.StatusTooManyRequests {
 			delay, _ := strconv.ParseInt(res.Header.Get("Retry-After"), 10, 64)
 			time.Sleep(time.Duration(delay) * time.Second)
